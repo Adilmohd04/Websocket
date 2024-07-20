@@ -35,7 +35,13 @@
 
     wsOpen.addEventListener('click', () => {
         closeConnection();
-        ws = new WebSocket('ws://localhost:3000');
+        let wsUrl;
+        if (window.location.hostname === 'localhost') {
+            wsUrl = 'ws://localhost:3000';
+        } else {
+            wsUrl = 'wss://websocket-black.vercel.app'; 
+        }
+        ws = new WebSocket(wsUrl);
         ws.addEventListener('error', () => {
             showMessage('WebSocket error');
         });
