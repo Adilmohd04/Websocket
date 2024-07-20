@@ -7,8 +7,8 @@ This project sets up a WebSocket server and client application.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Adilmohd04/websocket.git Websocket-main
-   cd Websocket-main
+   git clone https://github.com/Adilmohd04/Websocket.git
+   cd Websocket
    ```
 
 2. **Install dependencies:**
@@ -27,7 +27,7 @@ This project sets up a WebSocket server and client application.
 
    The server will listen on port 3000.
 
-
+http://localhost:3000/
 ## Usage
 
 - **Click "Open Connection"** to connect to the WebSocket server.
