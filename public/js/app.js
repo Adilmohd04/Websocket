@@ -41,24 +41,31 @@
         } else {
             wsUrl = 'wss://websocket-black.vercel.app/'; 
         }
-        ws = new WebSocket(wsUrl);
-        ws.addEventListener('error', () => {
-            showMessage('WebSocket error');
-        });
-        ws.addEventListener('open', () => {
-            showMessage('WebSocket connection established');
-        });
-        ws.addEventListener('close', () => {
-            showMessage('WebSocket connection closed');
-        });
-        ws.addEventListener('message', (msg) => {
-            const data = JSON.parse(msg.data);
-            if (data.type === 'echo' || data.type === 'reverse') {
-                updateMessageLine(data.type.charAt(0).toUpperCase() + data.type.slice(1), data.content);
-            } else if (data.type === 'count') {
-                showMessage(`Count of '${data.character}': ${data.count}`);
-            }
-        });
+
+        try {
+            ws = new WebSocket(wsUrl);
+            ws.addEventListener('error', (error) => {
+                showMessage(`WebSocket error: ${error.message}`);
+                console.error('WebSocket error:', error);
+            });
+            ws.addEventListener('open', () => {
+                showMessage('WebSocket connection established');
+            });
+            ws.addEventListener('close', () => {
+                showMessage('WebSocket connection closed');
+            });
+            ws.addEventListener('message', (msg) => {
+                const data = JSON.parse(msg.data);
+                if (data.type === 'echo' || data.type === 'reverse') {
+                    updateMessageLine(data.type.charAt(0).toUpperCase() + data.type.slice(1), data.content);
+                } else if (data.type === 'count') {
+                    showMessage(`Count of '${data.character}': ${data.count}`);
+                }
+            });
+        } catch (error) {
+            showMessage(`Failed to create WebSocket: ${error.message}`);
+            console.error('Failed to create WebSocket:', error);
+        }
     });
 
     wsClose.addEventListener('click', closeConnection);
