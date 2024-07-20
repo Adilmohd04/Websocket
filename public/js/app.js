@@ -1,4 +1,5 @@
 "use strict";
+
 (function () {
     let ws;
     const messages = document.getElementById('messages');
@@ -35,37 +36,26 @@
 
     wsOpen.addEventListener('click', () => {
         closeConnection();
-        let wsUrl;
-        if (window.location.hostname === 'localhost') {
-            wsUrl = 'ws://localhost:3000';
-        } else {
-            wsUrl = 'wss://websocket-black.vercel.app'; 
-        }
-
-        try {
-            ws = new WebSocket(wsUrl);
-            ws.addEventListener('error', (error) => {
-                showMessage(`WebSocket error: ${error.message}`);
-                console.error('WebSocket error:', error);
-            });
-            ws.addEventListener('open', () => {
-                showMessage('WebSocket connection established');
-            });
-            ws.addEventListener('close', () => {
-                showMessage('WebSocket connection closed');
-            });
-            ws.addEventListener('message', (msg) => {
-                const data = JSON.parse(msg.data);
-                if (data.type === 'echo' || data.type === 'reverse') {
-                    updateMessageLine(data.type.charAt(0).toUpperCase() + data.type.slice(1), data.content);
-                } else if (data.type === 'count') {
-                    showMessage(`Count of '${data.character}': ${data.count}`);
-                }
-            });
-        } catch (error) {
-            showMessage(`Failed to create WebSocket: ${error.message}`);
-            console.error('Failed to create WebSocket:', error);
-        }
+        const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+        const wsUrl = `${protocol}://${location.host}`;
+        ws = new WebSocket(wsUrl);
+        ws.addEventListener('error', () => {
+            showMessage('WebSocket error');
+        });
+        ws.addEventListener('open', () => {
+            showMessage('WebSocket connection established');
+        });
+        ws.addEventListener('close', () => {
+            showMessage('WebSocket connection closed');
+        });
+        ws.addEventListener('message', (msg) => {
+            const data = JSON.parse(msg.data);
+            if (data.type === 'echo' || data.type === 'reverse') {
+                updateMessageLine(data.type.charAt(0).toUpperCase() + data.type.slice(1), data.content);
+            } else if (data.type === 'count') {
+                showMessage(`Count of '${data.character}': ${data.count}`);
+            }
+        });
     });
 
     wsClose.addEventListener('click', closeConnection);
@@ -74,7 +64,7 @@
         const val = wsInput?.value;
         if (!val) {
             return;
-        } else if (!ws || ws.readyState !== WebSocket.OPEN) {
+        } else if (!ws) {
             showMessage('No WebSocket connection');
             return;
         }
