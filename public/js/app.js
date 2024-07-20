@@ -74,7 +74,7 @@
         const val = wsInput?.value;
         if (!val) {
             return;
-        } else if (!ws) {
+        } else if (!ws || ws.readyState !== WebSocket.OPEN) {
             showMessage('No WebSocket connection');
             return;
         }
