@@ -17,7 +17,7 @@
     }
 
     function updateMessageLine(type, content) {
-        const lines = messages.textContent.split('\n');
+        const lines = messages.textContent?.split('\n') || [];
         const lineIndex = lines.findIndex(line => line.startsWith(`${type}:`));
         if (lineIndex === -1) {
             lines.push(`${type}: ${content}`);
@@ -29,25 +29,31 @@
     }
 
     function closeConnection() {
-        if (!!ws) {
+        if (ws) {
             ws.close();
+            ws = undefined;
         }
     }
 
-    wsOpen.addEventListener('click', () => {
+    wsOpen?.addEventListener('click', () => {
         closeConnection();
         const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
         const wsUrl = `${protocol}://${location.host}`;
         ws = new WebSocket(wsUrl);
-        ws.addEventListener('error', () => {
+        
+        ws.addEventListener('error', (err) => {
+            console.error('WebSocket error', err);
             showMessage('WebSocket error');
         });
+        
         ws.addEventListener('open', () => {
             showMessage('WebSocket connection established');
         });
+        
         ws.addEventListener('close', () => {
             showMessage('WebSocket connection closed');
         });
+        
         ws.addEventListener('message', (msg) => {
             const data = JSON.parse(msg.data);
             if (data.type === 'echo' || data.type === 'reverse') {
@@ -58,9 +64,9 @@
         });
     });
 
-    wsClose.addEventListener('click', closeConnection);
+    wsClose?.addEventListener('click', closeConnection);
 
-    wsSend.addEventListener('click', () => {
+    wsSend?.addEventListener('click', () => {
         const val = wsInput?.value;
         if (!val) {
             return;
