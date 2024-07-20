@@ -38,8 +38,6 @@ const streamMessage = async (ws, type, message) => {
         streamedMessage += message[i];
         ws.send(JSON.stringify({ type: type, content: streamedMessage }));
     }
-
-    await delay(100);
 };
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
