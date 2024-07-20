@@ -39,7 +39,7 @@
         if (window.location.hostname === 'localhost') {
             wsUrl = 'ws://localhost:3000';
         } else {
-            wsUrl = 'wss://websocket-black.vercel.app/'; 
+            wsUrl = 'https://websocket-black.vercel.app/'; 
         }
 
         try {
