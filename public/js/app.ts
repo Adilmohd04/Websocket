@@ -2,11 +2,11 @@
 
 (function () {
     let ws: WebSocket | undefined;
-    const messages = document.getElementById('messages') as HTMLPreElement;
-    const wsOpen = document.getElementById('ws-open') as HTMLButtonElement;
-    const wsClose = document.getElementById('ws-close') as HTMLButtonElement;
-    const wsSend = document.getElementById('ws-send') as HTMLButtonElement;
-    const wsInput = document.getElementById('ws-input') as HTMLInputElement;
+    const messages = document.getElementById('messages') as HTMLDivElement | null;
+    const wsOpen = document.getElementById('ws-open') as HTMLButtonElement | null;
+    const wsClose = document.getElementById('ws-close') as HTMLButtonElement | null;
+    const wsSend = document.getElementById('ws-send') as HTMLButtonElement | null;
+    const wsInput = document.getElementById('ws-input') as HTMLInputElement | null;
 
     function showMessage(message: string) {
         if (!messages) {
@@ -17,6 +17,9 @@
     }
 
     function updateMessageLine(type: string, content: string) {
+        if (!messages) {
+            return;
+        }
         const lines = messages.textContent?.split('\n') || [];
         const lineIndex = lines.findIndex(line => line.startsWith(`${type}:`));
         if (lineIndex === -1) {
@@ -31,12 +34,15 @@
     function closeConnection() {
         if (ws) {
             ws.close();
+            ws = undefined;
         }
     }
 
-    wsOpen.addEventListener('click', () => {
+    wsOpen?.addEventListener('click', () => {
         closeConnection();
-        ws = new WebSocket('ws://localhost:3000');
+        const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+        const wsUrl = `${protocol}://${location.host}`;
+        ws = new WebSocket(wsUrl);
         ws.addEventListener('error', () => {
             showMessage('WebSocket error');
         });
@@ -46,7 +52,7 @@
         ws.addEventListener('close', () => {
             showMessage('WebSocket connection closed');
         });
-        ws.addEventListener('message', (msg: MessageEvent) => {
+        ws.addEventListener('message', (msg) => {
             const data = JSON.parse(msg.data);
             if (data.type === 'echo' || data.type === 'reverse') {
                 updateMessageLine(data.type.charAt(0).toUpperCase() + data.type.slice(1), data.content);
@@ -56,9 +62,9 @@
         });
     });
 
-    wsClose.addEventListener('click', closeConnection);
+    wsClose?.addEventListener('click', closeConnection);
 
-    wsSend.addEventListener('click', () => {
+    wsSend?.addEventListener('click', () => {
         const val = wsInput?.value;
         if (!val) {
             return;
