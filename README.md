@@ -33,5 +33,6 @@ http://localhost:3000/
 
 - **Click "Open Connection"** to connect to the WebSocket server.
 - **Send a message** using the "Send Message" button.
-- **View the response** in the message area.Stream like chatgpt
+- **View the response** in the message area.Stream like chatgpt.
+- ## Deployment 
   for deployment we need to host locally first in localhost:3000/ to connect in vercel
