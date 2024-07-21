@@ -29,6 +29,7 @@ This project sets up a WebSocket server and client application.
 
 http://localhost:3000/
 ## Usage
+![webs](https://github.com/user-attachments/assets/22d37d80-c91f-4570-a3dd-bf65571cb762)
 
 - **Click "Open Connection"** to connect to the WebSocket server.
 - **Send a message** using the "Send Message" button.
